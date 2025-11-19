@@ -3,6 +3,8 @@ from flask import redirect
 
 from sqlalchemy.exc import IntegrityError
 
+from model import Session
+
 from flask_cors import CORS
 
 info = Info(title="MVP 1 API", version="1.0.0")
