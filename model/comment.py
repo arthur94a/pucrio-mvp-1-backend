@@ -17,3 +17,12 @@ class Comment(Base):
     updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(), onupdate=datetime.utcnow
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "comment": self.comment,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }

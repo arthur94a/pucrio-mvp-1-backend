@@ -7,7 +7,7 @@ from .comment import Comment
 
 import os
 
-DB_PATH = "/database/"
+DB_PATH = "/database"
 
 if not os.path.exists(DB_PATH):
    os.makedirs(DB_PATH)

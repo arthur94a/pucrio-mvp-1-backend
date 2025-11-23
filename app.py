@@ -3,12 +3,12 @@ from flask import redirect
 # from passlib.hash import bcrypt
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, func
 
-from model import Session
+from model import Session, engine
 
 from model import Comment
-from schemas.comments import CreateCommentSchema, ListCommentsSchema, show_comment
+from schemas.comments import CreateCommentSchema, ListCommentsSchema, show_comment, show_comments
 
 from flask_cors import CORS
 
@@ -22,13 +22,25 @@ comment_tag = Tag(name="Comentario", description="Adição de um comentário à 
 def home():
     return redirect("/openapi")
 
+@app.get("/test")
+def list_number():
+    with Session() as session:
+        count = session.scalar(select(func.count()).select_from(Comment))
+        print("Quantidade no banco:", count)
+        return {"count": count}
 
 @app.get("/list", responses={"200": ListCommentsSchema})
 def list_comments():
     with Session() as session:
-        stmt = select(Comment)
-        result = session.execute(stmt)
-        return result
+        comments = session
+            .execute(select(Comment))
+            .scalars()
+            .all()
+
+        result = [c.to_dict() for c in comments]
+
+        return {"comments": result}
+    
 
 
 @app.post("/add", tags=[comment_tag], responses={"200": CreateCommentSchema})
