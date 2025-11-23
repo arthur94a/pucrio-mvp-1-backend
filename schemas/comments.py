@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional, List
+from model.comment import Comment
 
 class CommentBase(BaseModel):
     username: str = Field(default="johndoe", max_length=15)
@@ -8,8 +9,8 @@ class CommentBase(BaseModel):
 
 
 class CreateCommentSchema(CommentBase):
-    password = str = Field(min_length=4, max_length=30)
-    
+    password: str = Field(min_length=4, max_length=30)
+
 
 class CommentSchema(CommentBase):
     id: int
@@ -19,3 +20,15 @@ class CommentSchema(CommentBase):
 
 class ListCommentsSchema(BaseModel):
     comments: List[CommentSchema]
+
+def show_comment(comment: Comment):
+    """ Retorna uma representação do comentario seguindo o schema definido em
+        CommentSchema.
+    """
+    return {
+        "id": comment.id,
+        "username": comment.username,
+        "comment": comment.comment,
+        "created_at": comment.created_at,
+        "updated_at": comment.updated_at
+    }
