@@ -1,6 +1,8 @@
 FROM python:3.12.12-alpine3.22
 
-ENV FLASK_HOST 0.0.0.0
+ENV FLASK_HOST=0.0.0.0
+ENV FLASK_ENV=development
+ENV FLASK_DEBUG=1
 
 WORKDIR /app
 
