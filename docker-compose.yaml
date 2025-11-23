@@ -1,0 +1,7 @@
+services:
+  api:
+    image: mvp-api
+    volumes:
+      - ./database:/app/database/
+    ports:
+      - "5000:5000"

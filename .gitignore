@@ -27,3 +27,6 @@ tmp/
 *.sublime-workspace
 .DS_Store
 Thumbs.db
+
+# DATABASE
+*.sqlite3
