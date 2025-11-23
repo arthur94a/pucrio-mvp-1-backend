@@ -22,15 +22,6 @@ class ListCommentsSchema(BaseModel):
     comments: List[CommentSchema]
 
 
-# def comment_to_dict(comment: Comment):
-#     return {
-#         "id": comment.id,
-#         "username": comment.username,
-#         "comment": comment.comment,
-#         "created_at": str(comment.created_at),
-#         "updated_at": str(comment.updated_at),
-#     }
-
 def show_comments(comments: List[Comment]):
     """ Retorna a lista de comentarios seguindo o schema definido em
         CommentSchema.
