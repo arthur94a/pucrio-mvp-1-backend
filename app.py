@@ -1,5 +1,5 @@
 from flask_openapi3 import OpenAPI, Info, Tag
-from flask import redirect
+from flask import redirect, request
 # from passlib.hash import bcrypt
 
 from sqlalchemy.exc import IntegrityError
@@ -25,15 +25,15 @@ def home():
 
 @app.get("/list", responses={"200": ListCommentsSchema})
 def list_comments():
+    page = request.args.get('page', 1, type=int)
+    COMMENTS_PER_PAGE = 10
+    MAX = COMMENTS_PER_PAGE * page
+    MIN = MAX - COMMENTS_PER_PAGE + 1
+
     with Session() as session:
-        comments = session
-            .execute(select(Comment))
-            .scalars()
-            .all()
-
-        result = [c.to_dict() for c in comments]
-
-        return {"comments": result}
+        stmt = select(Comment).where((Comment.id >= MIN) & (Comment.id <= MAX))
+        comments = session.execute(stmt).scalars().all()
+        return show_comments(comments), 200
     
 
 @app.post("/add", tags=[comment_tag], responses={"200": CreateCommentSchema})
