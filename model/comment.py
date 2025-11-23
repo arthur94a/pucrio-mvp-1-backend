@@ -18,7 +18,24 @@ class Comment(Base):
         DateTime(), onupdate=datetime.utcnow
     )
 
+    def __init__(self, username:str, password_hash:str, comment:str, created_at:datetime):
+        """
+        Cria um 'Comment'
+
+        Arguments:
+            username: Usuário para definir o dono do comentário.
+            password_hash: Senha para autenticação
+            comment: Texto do conteúdo
+            created_at: Data de quando o comentário foi inserido à base
+        """
+        self.username = username
+        self.password_hash = password_hash
+        self.comment = comment
+
     def to_dict(self):
+        """ Converte para JSON
+        """
+        
         return {
             "id": self.id,
             "username": self.username,

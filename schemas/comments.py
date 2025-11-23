@@ -8,14 +8,18 @@ class CommentBase(BaseModel):
     comment: str
 
 
-class CreateCommentSchema(CommentBase):
-    password: str = Field(min_length=4, max_length=30)
-
-
 class CommentSchema(CommentBase):
     id: int
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: Optional[datetime] = None
+
+
+class CreateCommentSchema(CommentBase):
+    password: str = Field(min_length=4, max_length=30)
+
+
+class EditCommentSchema(CommentSchema):
+    password: str = Field(min_length=4, max_length=30)
 
 
 class ListCommentsSchema(BaseModel):
