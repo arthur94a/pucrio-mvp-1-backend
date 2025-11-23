@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from model import Base
-from model import Comments
+from model import Comment
 
 import os
 
