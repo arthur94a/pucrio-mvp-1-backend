@@ -2,6 +2,6 @@ services:
   mvp-api:
     build: .
     volumes:
-      - ./database:/database
+      - ./database:/app/database
     ports:
       - "5000:5000"
