@@ -7,7 +7,12 @@ from .comment import Comment
 
 import os
 
-DB_PATH = "/database"
+# Path to the database directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+PARENT_DIR = os.path.dirname(BASE_DIR)
+
+DB_PATH = os.path.join(PARENT_DIR, "database")
 
 if not os.path.exists(DB_PATH):
    os.makedirs(DB_PATH)
