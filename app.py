@@ -42,7 +42,6 @@ def list_comments():
 def add_comment(body: CreateCommentSchema):
     with Session() as session:
         hashed = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt())
-        # hashed = body.password
 
         comment = Comment(
             username=body.username,
@@ -62,6 +61,19 @@ def edit_comment(body: EditCommentSchema):
     with Session() as session:
         id = body.id
         newComment = body.comment
+        comment = session.get(Comment, id)
+
+        password_form = body.password.encode("utf-8")
+
+        if not comment:
+            return {"error": "Comentário não encontrado"}, 404
+
+        password_db = comment.password_hash
+
+
+        if not bcrypt.checkpw(password_form, password_db):
+            return {"error": "Senha incorreta"}, 401
+        
 
         stmt = update(Comment).where(Comment.id == id).values(
             comment=newComment
