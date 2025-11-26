@@ -1,11 +1,11 @@
 from flask_openapi3 import OpenAPI, Info, Tag
 from flask import redirect, request
-# from passlib.hash import bcrypt
+import bcrypt
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import insert, select, update
+from sqlalchemy import select, update
 
-from model import Session, engine
+from model import Session
 
 from model import Comment
 from schemas.comments import CreateCommentSchema, ListCommentsSchema, show_comment, show_comments, EditCommentSchema
@@ -41,8 +41,8 @@ def list_comments():
 @app.post("/add", tags=[tag_add], responses={"200": CreateCommentSchema})
 def add_comment(body: CreateCommentSchema):
     with Session() as session:
-        # hashed = bcrypt.hash(body.password)
-        hashed = body.password
+        hashed = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt())
+        # hashed = body.password
 
         comment = Comment(
             username=body.username,
@@ -61,8 +61,6 @@ def add_comment(body: CreateCommentSchema):
 def edit_comment(body: EditCommentSchema):
     with Session() as session:
         id = body.id
-        username = body.username
-        hashed = body.password
         newComment = body.comment
 
         stmt = update(Comment).where(Comment.id == id).values(

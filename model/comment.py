@@ -9,7 +9,7 @@ class Comment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     username: Mapped[str] = mapped_column(String(15), nullable=False)
-    password_hash: Mapped[str] = mapped_column(String, nullable=False)
+    password_hash: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
     comment: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(), default=datetime.utcnow
@@ -18,7 +18,7 @@ class Comment(Base):
         DateTime(), onupdate=datetime.utcnow
     )
 
-    def __init__(self, username:str, password_hash:str, comment:str, created_at:datetime):
+    def __init__(self, username:str, password_hash:str, comment:str):
         """
         Cria um 'Comment'
 
