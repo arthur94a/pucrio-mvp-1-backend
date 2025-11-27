@@ -25,6 +25,8 @@ class EditCommentSchema(CommentSchema):
 class ListCommentsSchema(BaseModel):
     comments: List[CommentSchema]
 
+class DeleteCommentSchema(CommentSchema):
+    password: str = Field(min_length=4, max_length=30)
 
 def show_comments(comments: List[Comment]):
     """ Retorna a lista de comentarios seguindo o schema definido em

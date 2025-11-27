@@ -3,12 +3,12 @@ from flask import redirect, request
 import bcrypt
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 
 from model import Session
 
 from model import Comment
-from schemas.comments import CreateCommentSchema, ListCommentsSchema, show_comment, show_comments, EditCommentSchema
+from schemas.comments import CreateCommentSchema, ListCommentsSchema, show_comment, show_comments, EditCommentSchema, DeleteCommentSchema
 
 from flask_cors import CORS
 
@@ -38,8 +38,8 @@ def list_comments():
         return show_comments(comments), 200
     
 
-@app.post("/add", tags=[tag_add], responses={"200": CreateCommentSchema})
-def add_comment(body: CreateCommentSchema):
+@app.post("/create", tags=[tag_add], responses={"200": CreateCommentSchema})
+def create_comment(body: CreateCommentSchema):
     with Session() as session:
         hashed = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt())
 
@@ -56,8 +56,8 @@ def add_comment(body: CreateCommentSchema):
         return show_comment(comment), 200
 
 
-@app.post("/edit", tags=[tag_edit], responses={"200": EditCommentSchema})
-def edit_comment(body: EditCommentSchema):
+@app.post("/update", tags=[tag_edit], responses={"200": EditCommentSchema})
+def update_comment(body: EditCommentSchema):
     with Session() as session:
         id = body.id
         newComment = body.comment
@@ -70,10 +70,8 @@ def edit_comment(body: EditCommentSchema):
 
         password_db = comment.password_hash
 
-
         if not bcrypt.checkpw(password_form, password_db):
             return {"error": "Senha incorreta"}, 401
-        
 
         stmt = update(Comment).where(Comment.id == id).values(
             comment=newComment
@@ -89,3 +87,31 @@ def edit_comment(body: EditCommentSchema):
             return {"error": "Comentário não encontrado"}, 404
 
         return show_comment(comment_updated), 200
+
+@app.post("/delete", responses={"200": DeleteCommentSchema})
+def delete_comment(body: DeleteCommentSchema):
+    with Session() as session:
+        id = body.id
+
+        comment = session.get(Comment, id)
+        if not comment:
+            return {"error": "Comentário não encontrado"}, 404
+
+        password_form = body.password.encode("utf-8")
+        password_db = comment.password_hash
+
+        if not bcrypt.checkpw(password_form, password_db):
+            return {"error": "Senha incorreta"}, 401
+
+        delete_stmt = delete(Comment).where(Comment.id == id)
+
+        session.execute(delete_stmt)
+
+        session.commit()
+
+        comment_to_delete = session.get(Comment, id)
+
+        if comment_to_delete:
+            return {"error": "Comentário não deletado"}, 404
+        
+        return {"succes": "Comentário deletado"}, 200
