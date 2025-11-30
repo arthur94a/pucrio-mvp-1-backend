@@ -19,6 +19,7 @@ CORS(app)
 tag_list = Tag(name="Listar comentários", description="Lista os comentários em ordem de 10 por vez, query 'page'.")
 tag_add = Tag(name="Adicionar comentário", description="Adição de um comentário a base.")
 tag_edit = Tag(name="Editar comentário", description="Edita um comentário existente, exige o password.")
+tag_delete = Tag(name="Excluir comentário", description="Excluir um comentário existente, exige o password.")
 
 @app.get("/")
 def home():
@@ -56,7 +57,7 @@ def create_comment(body: CreateCommentSchema):
         return show_comment(comment), 200
 
 
-@app.post("/update", tags=[tag_edit], responses={"200": EditCommentSchema})
+@app.put("/update", tags=[tag_edit], responses={"200": EditCommentSchema})
 def update_comment(body: EditCommentSchema):
     with Session() as session:
         id = body.id
@@ -88,7 +89,7 @@ def update_comment(body: EditCommentSchema):
 
         return show_comment(comment_updated), 200
 
-@app.post("/delete", responses={"200": DeleteCommentSchema})
+@app.delete("/delete", tags=[tag_delete], responses={"200": DeleteCommentSchema})
 def delete_comment(body: DeleteCommentSchema):
     with Session() as session:
         id = body.id
