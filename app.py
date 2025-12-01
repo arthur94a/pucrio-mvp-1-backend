@@ -28,13 +28,15 @@ def home():
 
 @app.get("/list", tags=[tag_list], responses={"200": ListCommentsSchema})
 def list_comments():
-    page = request.args.get('page', 1, type=int)
+    last_id = request.args.get('last_id', None, type=int)
     COMMENTS_PER_PAGE = 10
-    MAX = COMMENTS_PER_PAGE * page
-    MIN = MAX - COMMENTS_PER_PAGE + 1
 
     with Session() as session:
-        stmt = select(Comment).where((Comment.id >= MIN) & (Comment.id <= MAX))
+        stmt = select(Comment).order_by(Comment.id.desc()).limit(COMMENTS_PER_PAGE)
+        
+        if last_id:
+            stmt = stmt.where(Comment.id < last_id)
+
         comments = session.execute(stmt).scalars().all()
         return show_comments(comments), 200
     
