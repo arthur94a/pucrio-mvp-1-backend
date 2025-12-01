@@ -44,6 +44,9 @@ def create_comment(body: CreateCommentSchema):
     with Session() as session:
         hashed = bcrypt.hashpw(body.password.encode("utf-8"), bcrypt.gensalt())
 
+        if not body.username or not hashed or not body.comment:
+            return {"error": "Não é permitido campos nulos"}, 400
+
         comment = Comment(
             username=body.username,
             password_hash=hashed,
