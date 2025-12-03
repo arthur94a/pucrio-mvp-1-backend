@@ -2,7 +2,10 @@ from datetime import datetime
 from sqlalchemy import String, LargeBinary, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from model import Base
+import zoneinfo
 
+# Brasília's timezone
+BRT = zoneinfo.ZoneInfo("America/Sao_Paulo")
 
 class Comment(Base):
     __tablename__ = "Comentario"
@@ -12,10 +15,10 @@ class Comment(Base):
     password_hash: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
     comment: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(), default=datetime.utcnow
+        DateTime(timezone=True), default=lambda: datetime.now(BRT)
     )
     updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(), onupdate=datetime.utcnow
+        DateTime(timezone=True), onupdate=lambda: datetime.now(BRT)
     )
 
     def __init__(self, username:str, password_hash:str, comment:str):
