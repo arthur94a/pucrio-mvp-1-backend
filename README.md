@@ -24,23 +24,55 @@ Python | Flask | Pydantic | SQLAlchemy | Bcrypt
 
 ## TO INSTALL
 
+**obs: If Docker is your preferred option, skip to the next topic.**
+
 All libs are listed in `requirements.txt`. It is required to automatically install all dependencies.
 
 > Recommended for use with [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html).
 
-Install dependencies:
+Fast start with virtualenv:
+
+(1) Install the lib:
+
+```
+pip install virtualenv
+
+```
+(1.2) Create the enviroment folder:
+
+```
+virtualenv venv
+
+```
+(1.3) Activate enviroment:
+
+(1.3.1) windows
+
+```
+venv\Scripts\activate
+
+```
+
+(1.3.2) Linux/macOS
+
+```
+source venv/bin/activate
+
+```
+
+(2) Install dependencies:
 
 ```
 (env)$ pip install -r requirements.txt
 ```
 
-Install the tools for documentation:
+(3) Install the tools for documentation:
 
 ```
 (env)$  pip install -U flask-openapi3[swagger,redoc,rapidoc,rapipdf,scalar,elements]
 ```
 
-Run the follow commando to start API:
+(4) Run the follow commando to start API:
 
 ```
 (env)$ flask run --host 0.0.0.0 --port 5000
